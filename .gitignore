@@ -13,3 +13,6 @@ wheels/
 uv.lock
 
 .idea
+
+# Test
+.test

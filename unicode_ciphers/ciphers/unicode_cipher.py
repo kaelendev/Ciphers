@@ -50,7 +50,7 @@ class UnicodeCipher(Cipher):
         self.check_input(password=password, string=string, shift=shift)
 
         for char in self.string:
-            self.result += chr((ord(char) + ord(self.password[self.string.index(char) % self.password_len])) + self.shift % 1114111)
+            self.result += chr((ord(char) + ord(self.password[self.string.index(char) % self.password_len]) + self.shift % 1114111) % 1114111)
 
         return self.return_result()
 
@@ -60,7 +60,7 @@ class UnicodeCipher(Cipher):
         self.check_input(password=password, string=string, shift=shift)
 
         for char in self.string:
-            self.result += chr((ord(char) - ord(self.password[self.string.index(char) % self.password_len])) - self.shift % 1114111)
+            self.result += chr((ord(char) - ord(self.password[self.string.index(char) % self.password_len]) - self.shift % 1114111) % 1114111)
 
 
         return self.return_result()

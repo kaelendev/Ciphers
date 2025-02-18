@@ -20,15 +20,15 @@ class CaesarArgError(CipherArgError):
 class Caesar(Cipher):
     def __init__(self, string: str = '', shift: int = 13, options: [str]=None):
         """
-        Caesar Code: Rotating the 26 letters of the alphabet with an shift
+        Caesar Code: Rotating the 26 letters of the alphabet with a shift
         :param string: string to encipher
         :param shift: shift must be between **0** and **26**
-        :param options: *["digits"]* to rotate digits (by default)
+        :param options: *["digits"]* to rotate digits
                         *["specials"]* to rotate classic special chars
         """
         super().__init__(string, shift=shift)
         if options is None:
-            options = ["digits"]
+            options = []
         self.description = "Caesar cipher"
         self.lower = s.ascii_lowercase
         self.upper = s.ascii_uppercase
