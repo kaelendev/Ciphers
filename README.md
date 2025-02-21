@@ -47,6 +47,11 @@ To use **Ciphers**, you need to have Python 3.7 or higher installed. Follow thes
 
 3. You're ready to go! Import the ciphers into your Python scripts and start using them.
 
+4. You can also try the cli/tui:
+   ```bash
+   python3 -m unicode_ciphers  # start the interactive tui
+   python3 -m unicode_ciphers -h  # for the cli
+   ```
 ---
 
 ## 🎯 Usage
@@ -124,4 +129,4 @@ decoded = cipher.decode(string=decrypted.result)
 print(f"Decoded: {decoded.result}")  # Output: "Hello"
 ```
 
-| Absolument pas fait avec chatGPT en fait... Arrêtez euh
+> Absolument pas fait avec chatGPT en fait... mensonges !

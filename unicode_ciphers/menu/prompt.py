@@ -1,14 +1,35 @@
-from PyInquirer import prompt
+import questionary as inquirer
+
+import sys
+
 from . import validators
 
-def prompt_input(message: str, validator=validators.NotNull):
-    res = prompt([{
-        'name': 'res',
-        'type': 'input',
-        'message': message,
-        'validate': validator,
-        }])
-    return res.get('res')
+def prompt_continue():
+    q = inquirer.confirm("Detected a cancellation, do you still want to continue?",
+                         style= inquirer.Style([('question', 'bold fg:#fff bg:#de9c02')]),
+                         default=False
+    )
+    r = q.ask()
+    if r is None or not r:
+        return False
+    return True
+
+def question_wrapper(q):
+    r = q.ask()
+    if r is None and not prompt_continue():
+        sys.exit(1)
+    elif r is None:
+        return question_wrapper(q)
+    else:
+        return r
+
+def prompt_input(message: str, validator=validators.NotNull, **kwargs):
+    question = inquirer.text(
+        message=message,
+        validate=validator,
+        **kwargs
+    )
+    return question_wrapper(question)
 
 def prompt_password():
     return prompt_input("Enter password:")
@@ -18,22 +39,18 @@ def prompt_shift():
     return int(shift or 0)
 
 def prompt_string():
-    return prompt_input("Enter string:")
+    return prompt_input("Enter string:", multiline=True)
 
 def prompt_list(message: str, choices: [str]):
-    res = prompt([{
-        'name': 'res',
-        'type': 'list',
-        'message': message,
-        'choices': choices
-    }])
-    return res.get('res')
+    select = inquirer.select(
+        message=message,
+        choices=choices
+    )
+    return question_wrapper(select)
 
 def prompt_check_list(message: str, choices: [str]):
-    res = prompt([{
-        'name': 'res',
-        'type': 'checkbox',
-        'message': message,
-        'choices': choices
-    }])
-    return res.get('res')
+    select = inquirer.checkbox(
+        message=message,
+        choices=choices
+    )
+    return question_wrapper(select)

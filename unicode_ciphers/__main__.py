@@ -3,8 +3,9 @@ import pathlib
 from io import TextIOWrapper
 from os.path import exists
 from .ciphers import *
-from .menu.prompt import prompt_password, prompt_input, prompt_shift, prompt_list, prompt_check_list
+from .menu.check_install import check
 import argparse
+
 
 classes = ["caesar", "rotp", "unicode_cipher", "vigenere"]
 parser = argparse.ArgumentParser(prog='unicode_ciphers', description="Encrypt or decrypt a string using different ciphers.")
@@ -58,6 +59,9 @@ def handle_write_file(filename: str, result: str):
     open(filename, 'w', encoding='UTF-8').write(result)
 
 def main(args: Namespace):
+    check()
+    from .menu.prompt import prompt_password, prompt_input, prompt_shift, prompt_list, prompt_check_list
+
     encrypt_mode: str = args.encrypt_mode or prompt_list("Encrypt or Decrypt ?", ["Encrypt", "Decrypt"])
     cipher_class: str = args.cipher or prompt_list("What cipher are you using ?", [f"{cipher.replace('_', ' ').capitalize()}({cipher})" for cipher in classes])
     string: str = args.string or prompt_input('Enter string:')
@@ -68,14 +72,7 @@ def main(args: Namespace):
     match cipher_class.replace(" ", "_").split("(")[0].lower():
         case "caesar":
             shift = args.shift if args.shift is not None else prompt_shift()
-            q_options = [
-                {
-                    'name': 'digits',
-                },
-                {
-                    'name': 'specials'
-                }
-            ]
+            q_options = ['digits', 'specials']
             options = args.options or [] if args.shift else prompt_check_list("Options to rotate", q_options)
             cipher = Caesar(string=string, shift=shift, options=options)
         case "vigenere":
