@@ -22,5 +22,5 @@ def check():
                 install_package_pip('questionary')
         else:
             sys.exit(1)
-    os.system('cls' if os.name == 'nt' else 'clear')
-    print("Package successfully installed !")
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("Package successfully installed !")

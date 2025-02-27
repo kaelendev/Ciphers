@@ -1,6 +1,7 @@
 import string as s
 from unidecode import unidecode
 from .base import Cipher, CipherArgError
+from .registry import registry
 
 class CaesarArgError(CipherArgError):
     def __init__(self, message=None, code=None):
@@ -17,6 +18,11 @@ class CaesarArgError(CipherArgError):
     def __str__(self):
         return f"CesarArgError: {self.message}"
 
+@registry.register(
+    name="caesar",
+    description="Rotating the 26 letters of the alphabet with a shift",
+    fullname="Caesar Cipher"
+)
 class Caesar(Cipher):
     def __init__(self, string: str = '', shift: int = 13, options: [str]=None):
         """
@@ -29,7 +35,6 @@ class Caesar(Cipher):
         super().__init__(string, shift=shift)
         if options is None:
             options = []
-        self.description = "Caesar cipher"
         self.lower = s.ascii_lowercase
         self.upper = s.ascii_uppercase
         self.digits = s.digits

@@ -1,7 +1,7 @@
 import string as s
 from unidecode import unidecode
 from .base import Cipher, CipherArgError
-
+from .registry import registry
 
 class VigenereArgError(CipherArgError):
     def __init__(self, message=None, code=None):
@@ -17,6 +17,12 @@ class VigenereArgError(CipherArgError):
     def __str__(self):
         return f"VigenereArgError: {self.message}"
 
+
+@registry.register(
+    name="vigenere",
+    description="The Vigenère cipher is a method of encrypting alphabetic text where each letter of the plaintext is encoded with a different Caesar cipher",
+    fullname="Vigenere Cipher"
+)
 class Vigenere(Cipher):
     def __init__(self, string: str = '', password: str = ''):
         """
@@ -34,8 +40,10 @@ class Vigenere(Cipher):
         password_char = unidecode(self.password[password_index % len(self.password)])
         if password_char in self.upper:
             return self.upper.index(password_char)
-        else:
+        elif password_char in self.lower:
             return self.lower.index(password_char)
+        else:
+            return 0
 
     def check_input(self, string: str = '', password: str = ''):
         if string:
@@ -45,16 +53,18 @@ class Vigenere(Cipher):
         if password:
             self.password = password
         self.password = unidecode(self.password)
+        self.string = unidecode(self.string)
 
     def encipher(self, string: str = '', password: str = ''):
         self.result = ''
         self.check_input(string=string, password=password)
 
-        for char in unidecode(self.string):
+        for i_char in range(len(self.string)):
+            char = self.string[i_char]
             if char.lower() not in self.lower:
                 self.result += char
             else:
-                i_password = self.password_offset(unidecode(self.string).index(char))
+                i_password = self.password_offset(i_char)
                 if char in self.lower:
                     self.result += self.lower[
                     (self.lower.index(char) + i_password) % len(self.lower)]
@@ -67,16 +77,18 @@ class Vigenere(Cipher):
     def decipher(self, string: str = '', password: str = ''):
         self.result = ''
         self.check_input(string=string, password=password)
-        for char in unidecode(self.string):
+
+        for i_char in range(len(self.string)):
+            char = self.string[i_char]
             if char.lower() not in self.lower:
                 self.result += char
             else:
-                i_password = self.password_offset(unidecode(self.string).index(char))
+                i_password = self.password_offset(i_char)
                 if char in self.lower:
                     self.result += self.lower[
-                        (self.lower.index(char) - i_password) % len(self.lower)]
+                    (self.lower.index(char) - i_password) % len(self.lower)]
                 elif char in self.upper:
                     self.result += self.upper[
-                        (self.upper.index(char) - i_password) % len(self.upper)]
+                    (self.upper.index(char) - i_password) % len(self.upper)]
 
         return self.return_result()

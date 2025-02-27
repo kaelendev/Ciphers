@@ -5,9 +5,9 @@ from os.path import exists
 from .ciphers import *
 from .menu.check_install import check
 import argparse
+from .ciphers.registry import registry
 
-
-classes = ["caesar", "rotp", "unicode_cipher", "vigenere"]
+ciphers = [ x['name'] for x in registry.list_ciphers()]
 parser = argparse.ArgumentParser(prog='unicode_ciphers', description="Encrypt or decrypt a string using different ciphers.")
 
 def parse_args():
@@ -23,21 +23,22 @@ def parse_args():
     parser.add_argument('-c', '--cipher', help="Cipher to use for encryption/decryption")
     parser.add_argument('--option', action='append', dest="options",
                         help="Option(s) for encryption/decryption")
-    parser.add_argument('--hexa', action="store_true", help="The string will be decoded from hexa brefore being encrypted/decrypted")
+    parser.add_argument('--hexa', action="store_true", help="The string will be decoded from hexa before being encrypted/decrypted")
     return parser.parse_args()
 
 
 def handle_args(args: Namespace) -> Namespace:
     args.encrypt_mode = 'Encrypt' if args.encrypt else 'Decrypt' if args.decrypt else None
+
     if args.string and args.input_file:
         parser.error("You can't provide both 'string' and 'input_file' arguments")
     elif args.input_file:
         args.string = args.input_file.read()
 
-    if args.cipher and args.cipher.lower() not in classes:
-        parser.error(f"The cipher provided is not valid, please use one of these: {classes}")
+    if args.cipher and args.cipher.lower() not in ciphers:
+        parser.error(f"The cipher provided is not valid, please use one of these: {ciphers}")
     else:
-        args.cipher = classes[classes.index(args.cipher.lower())] if args.cipher else None
+        args.cipher = ciphers[ciphers.index(args.cipher.lower())] if args.cipher else None
 
     if args.hexa:
         separator = None
@@ -63,7 +64,7 @@ def main(args: Namespace):
     from .menu.prompt import prompt_password, prompt_input, prompt_shift, prompt_list, prompt_check_list
 
     encrypt_mode: str = args.encrypt_mode or prompt_list("Encrypt or Decrypt ?", ["Encrypt", "Decrypt"])
-    cipher_class: str = args.cipher or prompt_list("What cipher are you using ?", [f"{cipher.replace('_', ' ').capitalize()}({cipher})" for cipher in classes])
+    cipher_class: str = args.cipher or prompt_list("What cipher are you using ?", [f"{cipher.replace('_', ' ').capitalize()}({cipher})" for cipher in ciphers])
     string: str = args.string or prompt_input('Enter string:')
 
     if string.count("0x") >= len(string) / 2 and string.count(" ") == 0:
@@ -73,7 +74,7 @@ def main(args: Namespace):
         case "caesar":
             shift = args.shift if args.shift is not None else prompt_shift()
             q_options = ['digits', 'specials']
-            options = args.options or [] if args.shift else prompt_check_list("Options to rotate", q_options)
+            options = args.options or [] if args.shift is not None else prompt_check_list("Options to rotate", q_options)
             cipher = Caesar(string=string, shift=shift, options=options)
         case "vigenere":
             password = args.password or prompt_password()
