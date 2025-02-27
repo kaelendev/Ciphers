@@ -1,11 +1,11 @@
 from setuptools import setup, find_packages
 setup(
     name='Ciphers',
-    version='0.1.0',
+    version='0.1.1',
     author='daisseur',
     author_email='daisseur@gmail.com',
     packages=['unicode_ciphers'],
-
+    requires=['unidecode'],
     url='https://github.com/daisseur/unicode_ciphers',
     description="A project implementing custom encryption algorithms, including ROTP, UnicodeShiftCipher, and other text transformation methods.",
     long_description=open('README.md').read(),
