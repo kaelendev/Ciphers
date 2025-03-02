@@ -12,7 +12,7 @@ class CipherArgError(Exception):
 class Cipher:
     def __init__(self, string: str = '', **kwargs):
         self.description = "Base Cipher"
-        self.string = string
+        self.string = str(string)
         self.result = ''
         self.kwargs = kwargs
         self._error = CipherArgError
@@ -29,22 +29,23 @@ class Cipher:
     def return_result(self):
         return self.__class__(self.result, **self.kwargs)
 
-    def check_input(self, string: str = '', **kwargs):
+    def process_input(self, string: str = '', **kwargs):
         if string:
-            self.string = string
+            self.string = str(string)
         if not self.string:
             raise self._error("Input string is required.")
         for key, value in kwargs.items():
-            setattr(self, key, value)
+            if value is not None:
+                setattr(self, key, value)
 
     def encipher(self, string: str = '', **kwargs):
         self.result = ''
-        self.check_input(string=string, **kwargs)
+        self.process_input(string=string, **kwargs)
         raise NotImplementedError("Encipher method must be implemented in child classes.")
 
     def decipher(self, string: str = '', **kwargs):
         self.result = ''
-        self.check_input(string=string, **kwargs)
+        self.process_input(string=string, **kwargs)
         raise NotImplementedError("Decipher method must be implemented in child classes.")
 
     def encrypt(self, *args, **kwargs):

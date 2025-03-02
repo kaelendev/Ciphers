@@ -34,7 +34,6 @@ class UnicodeCipher(Cipher):
     def __init__(self, string: str = '', password: str = '', shift: int = 0):
         super().__init__(string, password=password, shift=shift)
         self.int_result = ''
-        self.password_len = len(password)
         self.password = password
         self.shift = shift
 
@@ -44,35 +43,30 @@ class UnicodeCipher(Cipher):
     def __hex__(self):
         return to_hexa(self.result)
 
-    def check_input(self, string: str = '', shift: int = 0, password: str = ''):
-        if string:
-            self.string = string
-        if shift:
-            self.shift = shift
-        if shift > 1114111:
+    def process_input(self, string: str = None, shift: int = None, password: str = None):
+        super().process_input(string, shift=shift, password=password)
+        if self.shift > 1114111:
             raise UnicodeCipherArgError(code=2)
-        if password:
-            self.password = password
         if not self.string:
             raise UnicodeCipherArgError(code=1)
 
-    def encipher(self, string: str = '', password: str = '', shift: int = 0):
+    def encipher(self, string: str = None, password: str = None, shift: int = None):
         self.result = ''
-        self.check_input(password=password, string=string, shift=shift)
+        self.process_input(password=password, string=string, shift=shift)
 
         for i_char in range(len(self.string)):
             char = self.string[i_char]
-            self.result += chr((ord(char) + ord(self.password[i_char % self.password_len]) + self.shift % 1114111) % 1114111)
+            self.result += chr((ord(char) + ord(self.password[i_char % len(self.password)]) + self.shift % 1114111) % 1114111)
 
         return self.return_result()
 
 
-    def decipher(self, string: str = '', password: str = '', shift: int = 0):
+    def decipher(self, string: str = None, password: str = None, shift: int = None):
         self.result = ''
-        self.check_input(password=password, string=string, shift=shift)
+        self.process_input(password=password, string=string, shift=shift)
 
         for i_char in range(len(self.string)):
             char = self.string[i_char]
-            self.result += chr((ord(char) - ord(self.password[i_char % self.password_len]) - self.shift % 1114111) % 1114111)
+            self.result += chr((ord(char) - ord(self.password[i_char % len(self.password)]) - self.shift % 1114111) % 1114111)
 
         return self.return_result()

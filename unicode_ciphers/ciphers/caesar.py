@@ -42,21 +42,16 @@ class Caesar(Cipher):
         self.options = options
         self.shift = shift
 
-    def check_input(self, string: str = '', shift: int = 0, options: [str] = None):
-        if string:
-            self.string = string
+    def process_input(self, string: str = None, shift: int = None, options: [str] = None):
+        super().process_input(string, shift=shift, options=options)
         if not self.string:
             raise CaesarArgError(code=1)
-        if options:
-            self.options = options
-        if shift:
-            self.shift = shift
         if self.shift > 26:
             return CaesarArgError(code=2)
 
-    def encipher(self, string: str = '', shift: int = 0, options: [str] = None):
+    def encipher(self, string: str = None, shift: int = None, options: [str] = None):
         self.result = ''
-        self.check_input(shift=shift, string=string, options=options)
+        self.process_input(shift=shift, string=string, options=options)
 
         for char in unidecode(self.string):
             if char in self.lower:
@@ -72,9 +67,9 @@ class Caesar(Cipher):
 
         return self.return_result()
 
-    def decipher(self, string: str='', shift: int=0):
+    def decipher(self, string: str=None, shift: int=None):
         self.result = ''
-        self.check_input(shift=shift, string=string)
+        self.process_input(shift=shift, string=string)
 
         for char in unidecode(self.string):
             if char in self.lower:

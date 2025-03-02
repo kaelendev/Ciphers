@@ -45,19 +45,16 @@ class Vigenere(Cipher):
         else:
             return 0
 
-    def check_input(self, string: str = '', password: str = ''):
-        if string:
-            self.string = string
+    def process_input(self, string: str = None, password: str = None):
+        super().process_input(string, password=password)
         if not self.string:
             raise VigenereArgError(code=1)
-        if password:
-            self.password = password
         self.password = unidecode(self.password)
         self.string = unidecode(self.string)
 
-    def encipher(self, string: str = '', password: str = ''):
+    def encipher(self, string: str = None, password: str = None):
         self.result = ''
-        self.check_input(string=string, password=password)
+        self.process_input(string=string, password=password)
 
         for i_char in range(len(self.string)):
             char = self.string[i_char]
@@ -74,9 +71,9 @@ class Vigenere(Cipher):
 
         return self.return_result()
 
-    def decipher(self, string: str = '', password: str = ''):
+    def decipher(self, string: str = None, password: str = None):
         self.result = ''
-        self.check_input(string=string, password=password)
+        self.process_input(string=string, password=password)
 
         for i_char in range(len(self.string)):
             char = self.string[i_char]

@@ -10,7 +10,7 @@ A project implementing custom encryption algorithms, including ROTP, UnicodeShif
 - [Features](#-features)
 - [Installation](#-installation)
 - [Usage](#-usage)
-- [Examples](#-examples)
+- [Ciphers](#-ciphers)
 
 ---
 
@@ -56,21 +56,53 @@ To use **Ciphers**, you need to have Python 3.7 or higher installed. Follow thes
 
 ## 🎯 Usage
 
-### ROTP Cipher
+### There are different ways to encrypt/decrypt using this module
+- __Using `to_encipher()` and `to_decipher()`__: 
+  ```python
+  from unicode_ciphers import to_encipher, to_decipher
+  
+  encrypted = to_encipher('caesar', "Veni vidi dici", shift=13)
+  decrypted = to_decipher('caesar', encrypted, shift=13)
+  ```
+- __Using a `Cipher` class width direct methods__:
+  ```python
+  from unicode_ciphers import Caesar
+  
+  encrypted = Caesar("Veni vidi dici", shift=13).encrypt()
+  # or 
+  encrypted = Caesar().encrypt("Veni vici dici", shift=13)
+  
+  decrypted = Caesar(encrypted, shift=13).decrypt()
+  # or 
+  decrypted = encrypted.decrypt()
+  ```
+- __By instancing cipher class with password/shift arguments__:
+  ```python
+  from unicode_ciphers import Caesar
+  
+  cipher = Caesar(shift=13)
+
+  encrypted = cipher.encrypt("Veni vidi dici")
+  decrypted = cipher.decrypt(encrypted)
+  ```
+  
+## 🔐 Ciphers
+
+### ROTP Cipher (Rotation with Password)
 
 ```python
 from unicode_ciphers.ciphers import ROTP
 
 # Initialize the cipher with a password
-rotp = ROTP(password="secret", string="Hello, World!")
+rotp = ROTP(password="secret")
 
-# encrypte the string
-decrypted = rotp.encrypt()
-print(f"encrypted: {decrypted}")
+# Encrypt the string
+encrypted = rotp.encrypt("Hello World !")
+print(f"Encrypted: {encrypted}")
 
-# Decode the string
-decoded = rotp.decode(string=decrypted.result)
-print(f"Decoded: {decoded}")
+# Decrypt the string
+decrypted = rotp.decipher(encrypted)
+print(f"Decrypted: {decrypted}")
 ```
 
 ### Unicode Cipher
@@ -79,15 +111,49 @@ print(f"Decoded: {decoded}")
 from unicode_ciphers.ciphers import UnicodeCipher
 
 # Initialize the cipher with a password and shift
-cipher = UnicodeCipher(password="key", string="Hello", shift=5, hexa=True)
+cipher = UnicodeCipher(password="key", shift=5)
 
-# encrypte the string
-decrypted = cipher.encrypt()
-print(f"encrypted (Hex): {decrypted.result}")
+# Encrypt the string
+encrypted = cipher.encrypt("Hello World !")
+print(f"Encrypted: {encrypted}")
 
-# Decode the string
-decoded = cipher.decode(string=decrypted.result)
-print(f"Decoded: {decoded}")
+# Decrypt the string
+decrypted = cipher.decrypt(encrypted)
+print(f"Decrypted: {decrypted}")
+```
+
+### Vigenère Cipher
+
+```python
+from unicode_ciphers.ciphers import Vigenere
+
+# Initialize the cipher with a password and shift
+cipher = Vigenere(password="key")
+
+# Encrypt the string
+encrypted = cipher.encrypt("Hello World !")
+print(f"Encrypted: {encrypted}")
+
+# Decrypt the string
+decrypted = cipher.decrypt(encrypted)
+print(f"Decrypted: {decrypted}")
+```
+
+### Caesar Cipher
+
+```python
+from unicode_ciphers.ciphers import Caesar
+
+# Initialize the cipher with a password and shift
+cipher = Caesar(shift=13)
+
+# Encrypt the string
+encrypted = cipher.encrypt("Hello World !")
+print(f"Encrypted: {encrypted}")
+
+# Decrypt the string
+decrypted = cipher.decrypt(encrypted)
+print(f"Decrypted: {decrypted}")
 ```
 
 ### Hex Conversion
@@ -96,37 +162,12 @@ print(f"Decoded: {decoded}")
 from unicode_ciphers.ciphers import to_hexa, from_hexa
 
 # Convert text to hexadecimal
-hex_string = to_hexa("Hello", separator="-")
+hex_string = to_hexa("Hello", separator=" ")
 print(f"Hex: {hex_string}")
 
 # Convert hexadecimal back to text
-original_string = from_hexa(hex_string, separator="-")
+original_string = from_hexa(hex_string, separator=" ")
 print(f"Original: {original_string}")
 ```
 
 ---
-
-## 📚 Examples
-
-### Example 1: Using ROTP Cipher
-```python
-from unicode_ciphers.ciphers import ROTP
-
-rotp = ROTP(password="myPassword", string="Encrypt this message!")
-decrypted = rotp.encrypt()
-print(f"encrypted: {decrypted.result}")  # Output: encrypted text
-decoded = rotp.decode(string=decrypted.result)
-print(f"Decoded: {decoded.result}")  # Output: "Encrypt this message!"
-```
-
-### Example 2: Using UnicodeShiftCipher
-```python
-from unicode_ciphers.ciphers import UnicodeCipher
-cipher = UnicodeCipher(password="key", string="Hello", shift=10, hexa=False)
-decrypted = cipher.encrypt()
-print(f"encrypted: {decrypted.result}")  # Output: Transformed text
-decoded = cipher.decode(string=decrypted.result)
-print(f"Decoded: {decoded.result}")  # Output: "Hello"
-```
-
-> Absolument pas fait avec chatGPT en fait... mensonges !
