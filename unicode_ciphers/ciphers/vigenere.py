@@ -33,7 +33,7 @@ class Vigenere(Cipher):
         super().__init__(string, password=password)
         self.upper = s.ascii_uppercase
         self.lower = s.ascii_lowercase
-        self.description = "Rotation with Password"
+        self.description = "Vigenere Cipher"
         self.password = password
 
     def password_offset(self, password_index: int):
@@ -55,37 +55,41 @@ class Vigenere(Cipher):
     def encipher(self, string: str = None, password: str = None):
         self.result = ''
         self.process_input(string=string, password=password)
+        password_index = 0
 
-        for i_char in range(len(self.string)):
-            char = self.string[i_char]
-            if char.lower() not in self.lower:
+        for char in self.string:
+            if not char.isalpha():
                 self.result += char
-            else:
-                i_password = self.password_offset(i_char)
-                if char in self.lower:
-                    self.result += self.lower[
-                    (self.lower.index(char) + i_password) % len(self.lower)]
-                elif char in self.upper:
-                    self.result += self.upper[
-                    (self.upper.index(char) + i_password) % len(self.upper)]
+                continue
 
+            i_password = self.password_offset(password_index)
+            if char.islower():
+                alphabet = self.lower
+            else:
+                alphabet = self.upper
+
+            self.result += alphabet[(alphabet.index(char) + i_password) % 26]
+            password_index += 1
         return self.return_result()
 
     def decipher(self, string: str = None, password: str = None):
         self.result = ''
         self.process_input(string=string, password=password)
+        password_index = 0
 
-        for i_char in range(len(self.string)):
-            char = self.string[i_char]
-            if char.lower() not in self.lower:
+        for char in self.string:
+            if not char.isalpha():
                 self.result += char
+                continue
+
+            i_password = self.password_offset(password_index)
+            if char.islower():
+                alphabet = self.lower
             else:
-                i_password = self.password_offset(i_char)
-                if char in self.lower:
-                    self.result += self.lower[
-                    (self.lower.index(char) - i_password) % len(self.lower)]
-                elif char in self.upper:
-                    self.result += self.upper[
-                    (self.upper.index(char) - i_password) % len(self.upper)]
+                alphabet = self.upper
+
+            original_pos = (alphabet.index(char) - i_password) % len(alphabet)
+            self.result += alphabet[original_pos]
+            password_index += 1
 
         return self.return_result()

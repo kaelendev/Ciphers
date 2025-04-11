@@ -94,7 +94,7 @@ def main(args: Namespace):
     elif cipher:
         return cipher.decrypt()
 
-if __name__ == '__main__':
+def run_cli():
     args = parse_args()
     args = handle_args(args)
 
@@ -109,3 +109,7 @@ if __name__ == '__main__':
     print(f"Result (string): {result}")
     print(f"Result (repr): {_repr}")
     print(f"Result (hexa): {_hexa}")
+
+
+if __name__ == '__main__':
+    run_cli()
