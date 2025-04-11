@@ -18,7 +18,6 @@ A project implementing custom encryption algorithms, including ROTP, UnicodeShif
 
 **Ciphers** is a Python-based project that provides a collection of custom encryption and decryption algorithms. It includes implementations of unique ciphers like **ROTP** (Rotation with Password) and **UnicodeShiftCipher**, which allow for dynamic and flexible text transformations.
 
----
 
 ## ✨ Features
 
@@ -26,9 +25,7 @@ A project implementing custom encryption algorithms, including ROTP, UnicodeShif
 - **Unicode Cipher**: A cipher that uses Unicode values and a shift to transform text, with support for hexadecimal output.
 - **Hex Conversion**: Utilities to convert text to hexadecimal and vice versa.
 - **Customizable**: Easily extendable to add new ciphers or modify existing ones.
-- **Error Handling**: Robust input validation and error handling for reliable usage.
 
----
 
 ## 🛠️ Installation
 
@@ -39,20 +36,20 @@ To use **Ciphers**, you need to have Python 3.7 or higher installed. Follow thes
    git clone https://github.com/daisseur/Ciphers.git
    cd Ciphers
    ```
-
-2. Install the required dependencies (if any):
+2. Install the package/cli
+   - Using `pip`:
+     ```bash
+     pip install -e .
+     ```
+   - Using `pipx` to make the cli available everywhere:
+     ```bash
+     pipx install .
+     ```
+3. Use the cli
    ```bash
-   pip install -r requirements.txt
+   ciphers -h
+   ciphers -d "ŴƗƥƝƝśưƔƗƫƖ"  -p "ciphers" -c unicode_cipher -s 201  # Should output 'Hello there'
    ```
-
-3. You're ready to go! Import the ciphers into your Python scripts and start using them.
-
-4. You can also try the cli/tui:
-   ```bash
-   python3 -m unicode_ciphers  # start the interactive tui
-   python3 -m unicode_ciphers -h  # for the cli
-   ```
----
 
 ## 🎯 Usage
 
@@ -64,7 +61,7 @@ To use **Ciphers**, you need to have Python 3.7 or higher installed. Follow thes
   encrypted = to_encipher('caesar', "Veni vidi dici", shift=13)
   decrypted = to_decipher('caesar', encrypted, shift=13)
   ```
-- __Using a `Cipher` class width direct methods__:
+- __Using a `Cipher` class with direct methods__:
   ```python
   from unicode_ciphers import Caesar
   
